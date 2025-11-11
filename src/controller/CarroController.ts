@@ -21,8 +21,26 @@ class CarroController extends Carro {
 
             return res.status(500).json({ mensagem: "Não foi possivel acessar a lista de carros." });
         }
-
     }
+
+    static async novo(req: Request, res: Response): Promise<Response> {
+        try {
+            const dadosRecebidosCarro = req.body;
+
+            const respostaModelo = await Carro.cadastrarCarro(dadosRecebidosCarro);
+
+            if (respostaModelo) {
+                return res.status(201).json({ mensagem: "Carro cadastrado com sucesso." });
+            } else {
+                return res.status(400).json({ mensagem: "Erro ao cadastrar carro." });
+            }
+        } catch (error) {
+            console.error(`Erro no modelo. ${error}`);
+
+            return res.status(500).json({ mensagem: "Não foi possível inserir o carro" });
+        }
+    }
+
 }
 
 export default CarroController;

@@ -14,7 +14,12 @@ router.get("/api", (req: Request, res: Response) => {
  */
 // Retorna a lista com todos os clientes
 router.get("/api/clientes", ClienteController.todos);
+// Cadastra um novo cliente
+router.post("/api/clientes", ClienteController.novo);
+// Retorna um cliente a partir do ID
+router.get("/api/clientes/:idCliente", ClienteController.cliente);
 
 router.get("/api/carros", CarroController.todos);
+router.post("/api/carros", CarroController.novo);
 
 export { router }; // Exporta o roteador

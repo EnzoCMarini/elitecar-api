@@ -1,3 +1,4 @@
+import type { CarroDTO } from "../interface/CarroDTO.js";
 import { DatabaseModel } from "./DatabaseModel.js";
 
 const database = new DatabaseModel().pool;
@@ -103,7 +104,7 @@ class Carro {
 
     /**
      * Atribui uma cor ao carro
-     * @param cor novo cor do carro
+     * @param cor nova cor do carro
      */
     public setCor(cor: string): void {
         this.cor = cor;
@@ -142,6 +143,34 @@ class Carro {
             return null;
         }
     }
+
+    static async cadastrarCarro(carro: CarroDTO): Promise<boolean> {
+        try {
+            const queryInsertCarro = `INSERT INTO clientes (nome, cpf, telefone) VALUES
+                                    ($1, $2, $3)
+                                    RETURNING id_carro;`;
+
+            const respostaBD = await database.query(queryInsertCarro, [
+                carro.marca,
+                carro.modelo,
+                carro.ano,
+                carro.cor
+            ]);
+
+            if (respostaBD.rows.length > 0) {
+                console.info(`Carro cadastrado com sucesso. ID: ${respostaBD.rows[0].id_carro}`);
+
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.error(`Erro na consulta ao banco de dados. ${error}`);
+
+            return false;
+        }
+    }
+
 }
 
 export default Carro;
