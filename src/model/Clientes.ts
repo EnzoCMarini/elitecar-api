@@ -208,6 +208,24 @@ class Cliente {
             return null;
         }
     }
+
+    static async removerCliente(id_cliente: number): Promise<boolean> {
+        try {
+            const queryDeleteCliente = `UPDATE clientes SET situacao = FALSE WHERE id_cliente = $1`;
+
+            const respostaBD = await database.query(queryDeleteCliente, [id_cliente]);
+
+            if(respostaBD.rowCount != 0) {
+                console.info(`Cliente removido com sucesso`);
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.error(`Erro ao remover cliente do banco de dados, ${error}`);
+            return false;
+        }
+    }
 }
 
 export default Cliente;

@@ -1,5 +1,5 @@
 import type { ClienteDTO } from "../interface/ClienteDTO.js";
-import Cliente from "../model/Cliente.js";
+import Cliente from "../model/Clientes.js";
 import type { Request, Response } from "express";
 
 /**
@@ -114,6 +114,27 @@ class ClienteController extends Cliente {
             // Retorna uma resposta HTTP com status 500 (erro interno do servidor)
             // Envia uma mensagem informando que não foi possível acessar os dados
             return res.status(500).json({ mensagem: "Não foi possível recuperar o cliente." });
+        }
+    }
+
+    static async remover(req: Request, res: Response): Promise<Response> {
+        try {
+            const idCliente: number = parseInt(req.params.idCliente as string);
+
+            if (isNaN(idCliente) || idCliente <= 0) {
+                return res.status(400).json({ mensagem: "ID inválido." });
+            }
+
+            const respostaModelo: boolean = await Cliente.removerCliente(idCliente);
+
+            if(respostaModelo) {
+                return res.status(200).json({ mensagem: "Cliente removido com sucesso." });
+            } else {
+                return res.status(400).json({ mensagem: "Não foi possível remover o cliente." });
+            }
+        } catch (error) {
+            console.error(`Erro ao acessar modelo. ${error}`);
+            return res.status(500).json({ mensagem: "Não foi possível remover o cliente." });
         }
     }
 }

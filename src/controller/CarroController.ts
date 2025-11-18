@@ -1,25 +1,17 @@
-import Carro from "../model/Carro.js";
+import Carro from "../model/Carros.js";
 import type { Request, Response } from "express";
 
 class CarroController extends Carro {
 
-    /**
-     * Faz a chamada ao modelo para obter a lista de carros e devolve ao carro
-     * 
-     * @param req Requisição do carro
-     * @param res Resposta do servidor
-     * @returns (200) Lista de todos os carros
-     * @returns (500) Erro na consulta
-     */
     static async todos(req: Request, res: Response): Promise<Response> {
         try {
-            const listaCarros: Array<Carro> | null = await Carro.listarCarros();
+            const listaCarros: Array<Carro> = await Carro.listarCarros() ?? [];
 
             return res.status(200).json(listaCarros);
         } catch (error) {
             console.error(`Erro ao consultar modelo. ${error}`);
 
-            return res.status(500).json({ mensagem: "Não foi possivel acessar a lista de carros." });
+            return res.status(500).json({ mensagem: "Não foi possível acessar a lista de carros." });
         }
     }
 
@@ -41,6 +33,26 @@ class CarroController extends Carro {
         }
     }
 
+    static async remover(req: Request, res: Response): Promise<Response> {
+        try {
+            const idCarro: number = parseInt(req.params.idCarro as string);
+
+            if (isNaN(idCarro) || idCarro <= 0) {
+                return res.status(400).json({ mensagem: "ID inválido." });
+            }
+
+            const respostaModelo: boolean = await Carro.removerCarro(idCarro);
+
+            if(respostaModelo) {
+                return res.status(200).json({ mensagem: "Carro removido com sucesso." });
+            } else {
+                return res.status(400).json({ mensagem: "Não foi possível remover o carro." });
+            }
+        } catch (error) {
+            console.error(`Erro ao acessar modelo. ${error}`);
+            return res.status(500).json({ mensagem: "Não foi possível remover o carro." });
+        }
+    }
 }
 
 export default CarroController;
