@@ -94,8 +94,8 @@ class Carro {
 
     static async cadastrarCarro(carro: CarroDTO): Promise<boolean> {
         try {
-            const queryInsertCarro = `INSERT INTO carro (nome, cpf, telefone) VALUES
-                                    ($1, $2, $3)
+            const queryInsertCarro = `INSERT INTO carros (marca, modelo, ano, cor) VALUES
+                                    ($1, $2, $3, $4)
                                     RETURNING id_carro;`;
 
             const respostaBD = await database.query(queryInsertCarro, [
